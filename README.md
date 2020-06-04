@@ -18,6 +18,8 @@ want to. Example:
 map <leader>gc <Plug>CountWords
 ```
 
+This binding works for both visual and normal modes.
+
 Upon using the binding, you'll have to open the quickfix window to
 display the results, as so:
 
