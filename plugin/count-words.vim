@@ -36,9 +36,13 @@ call s:set("g:wordcount_threshold", 2)
 " Ignore letter case
 call s:set("g:wordcount_ignore_case", 1)
 
+" Arrange in descending order
+call s:set("g:wordcount_descending_order", 0)
+
 function! VimWordCountQf(visual) abort
 	let l:threshold = g:wordcount_threshold
 	let l:ignore_case = g:wordcount_ignore_case
+	let l:descending = g:wordcount_descending_order
 	if type(l:threshold) != type(0)
 		throw "Threshold not a number"
 	endif
@@ -47,12 +51,15 @@ function! VimWordCountQf(visual) abort
 	endif
 	call s:wordcount(a:visual,
 		\ l:threshold,
-		\ l:ignore_case)
+		\ l:ignore_case,
+		\ l:descending)
 endfunction
 
-function! s:wordcount(visual, threshold, ignore_case)
+function! s:wordcount(visual, threshold, ignore_case, descending)
 	let l:contents = s:contents(a:visual)
-	let l:shell_cmd = s:create_shell_cmd(l:contents, a:ignore_case)
+	let l:shell_cmd = s:create_shell_cmd(l:contents,
+				\ a:ignore_case,
+				\ a:descending)
 	let l:shell_op = systemlist(l:shell_cmd)
 	let l:qflist = s:create_qflist(l:shell_op, a:threshold)
 	call setqflist(l:qflist, 'r')
@@ -76,7 +83,7 @@ function! s:contents(visual) abort
 	return shellescape(join(l:lines), "\n")
 endfunction
 
-function! s:create_shell_cmd(contents, ignore_case)
+function! s:create_shell_cmd(contents, ignore_case, descending)
 	if a:ignore_case
 		let l:uniq_flags = "-ci"
 	else
@@ -88,6 +95,9 @@ function! s:create_shell_cmd(contents, ignore_case)
 		\ " | sort " .
 		\ " | uniq " . l:uniq_flags .
 		\ " | sort -n"
+	if a:descending
+		let l:shell_cmd .= " | tac"
+	endif
 	return l:shell_cmd
 endfunction
 
