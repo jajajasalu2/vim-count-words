@@ -44,6 +44,13 @@ ignored. For example:
 let g:wordcount_ignore_case = 1
 ```
 
+`g:wordcount_descending_order` is used for displaying the words in descending
+order. By default it is `0`, i.e., ascending order. For example:
+
+```
+let g:wordcount_descending_order = 0
+```
+
 ### Installation
 
 Use your favorite plugin manager. For
